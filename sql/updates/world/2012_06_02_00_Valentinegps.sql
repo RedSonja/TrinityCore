@@ -1,0 +1,2 @@
+Delete From `creature` where `id` =800016;
+insert into `creature` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`) values('209841','800016','571','1','1','0','0','5734.42','604.453','619.011','5.83184','300','0','0','42','0','0','0','0','0');
