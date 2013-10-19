@@ -188,6 +188,7 @@ enum Events
     EVENT_ESCAPE_20,
     EVENT_ESCAPE_21,
     EVENT_ESCAPE_22,
+	EVENT_ESCAPE_22h,
     EVENT_ESCAPE_23,
     EVENT_ESCAPE_24,
     EVENT_ESCAPE_25,
@@ -714,7 +715,9 @@ class npc_jaina_or_sylvanas_escape_hor : public CreatureScript
     // AI of Part2
     struct npc_jaina_or_sylvanas_escape_horAI : public ScriptedAI
     {
-        npc_jaina_or_sylvanas_escape_horAI(Creature* creature) : ScriptedAI(creature)
+        npc_jaina_or_sylvanas_escape_horAI(Creature* creature) : ScriptedAI(creature),
+            _instance(creature->GetInstanceScript()), _lichkingGUID(0), _walltargetGUID(0),
+            _icewallGUID(0), _icewall(0), _isattackingwall(0)
         {
             _instance = me->GetInstanceScript();
         }
@@ -988,12 +991,15 @@ class npc_jaina_or_sylvanas_escape_hor : public CreatureScript
                             lichking->SetReactState(REACT_PASSIVE);
                             lichking->Attack(me,true);
                         }
-                        if (Creature* walltarget = me->SummonCreature(NPC_ICE_WALL, IceWalls[_icewall].GetPositionX(), IceWalls[_icewall].GetPositionY(), IceWalls[_icewall].GetPositionZ(), IceWalls[_icewall].GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN, 720000))
+                        if (_icewall < 4)
                         {
-                            _walltargetGUID = walltarget->GetGUID();
-                            walltarget->AI()->DoCast(walltarget, SPELL_SUMMON_ICE_WALL);
-                            walltarget->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                            me->Attack(walltarget,false);
+                            if (Creature* walltarget = me->SummonCreature(NPC_ICE_WALL, IceWalls[_icewall].GetPositionX(), IceWalls[_icewall].GetPositionY(), IceWalls[_icewall].GetPositionZ(), IceWalls[_icewall].GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN, 720000))
+                            {
+                                _walltargetGUID = walltarget->GetGUID();
+                                walltarget->AI()->DoCast(walltarget, SPELL_SUMMON_ICE_WALL);
+                                walltarget->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                                me->Attack(walltarget,false);
+                            }
                         }
                         _events.ScheduleEvent(EVENT_ESCAPE_20, 3000);
                         break;
@@ -1014,7 +1020,7 @@ class npc_jaina_or_sylvanas_escape_hor : public CreatureScript
                                     else if (_icewall == 3)
                                         me->AI()->Talk(SAY_JAINA_ESCAPE_5);
                                 }
-                                else if (_instance->GetData(DATA_TEAM_IN_INSTANCE) == ALLIANCE)
+                                else if (_instance->GetData(DATA_TEAM_IN_INSTANCE) == HORDE)
                                 {
                                     if (_icewall == 1)
                                         me->AI()->Talk(SAY_SYLVANAS_ESCAPE_3);
@@ -1060,11 +1066,13 @@ class npc_jaina_or_sylvanas_escape_hor : public CreatureScript
                             if (_icewall >= 2 && _icewall < 4)
                                 lichking->AI()->DoCast(lichking, SPELL_SUMMON_LUMBERING_ABOMINATION);
                         }
+                       _events.ScheduleEvent(EVENT_ESCAPE_22h, 1000);
+					case EVENT_ESCAPE_22h:
                         if (_instance->GetData(DATA_TEAM_IN_INSTANCE) == HORDE)
                         {
                             me->AI()->DoCast(me, SPELL_SYLVANAS_DESTROY_ICE_WALL, false);
                             if (_isattackingwall)
-                                _events.ScheduleEvent(EVENT_ESCAPE_22, 1000);
+                                _events.ScheduleEvent(EVENT_ESCAPE_22h, 1000);
                         }
                         break;
 

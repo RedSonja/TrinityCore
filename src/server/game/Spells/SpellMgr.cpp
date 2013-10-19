@@ -3732,6 +3732,9 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             // ENDOF OCULUS SPELLS
             //
+            case 42436: // Brewfest: Chug and Chuck
+                spellInfo->Effects[EFFECT_0].TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ANY);
+                break;
             case 40055: // Introspection
             case 40165: // Introspection
             case 40166: // Introspection

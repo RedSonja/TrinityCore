@@ -1,0 +1,3 @@
+UPDATE `creature_template` SET `AIName`='SmartAI', `unit_flags`=512 WHERE `entry`=24108;
+INSERT INTO `smart_scripts` (`entryorguid`, `event_type`, `event_param1`, `event_param2`, `action_type`, `action_param1`, `target_type`, `comment`) VALUES 
+(24108, 8, 42436, 1, 33, 24108, 7, 'on spellhit -  kill credit');
