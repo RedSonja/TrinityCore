@@ -90,9 +90,9 @@ enum GameObjects
     GO_CAVE                                       = 201596,
 
     GO_STAIRS_SKYBREAKER                          = 201709,
-    GO_SKYBREAKER                                 = 201598,
+    GO_SKYBREAKER                                 = 500002,
     GO_STAIRS_ORGRIM_HAMMER                       = 202211,
-    GO_ORGRIM_HAMMER                              = 201599,
+    GO_ORGRIM_HAMMER                              = 500003,
     GO_PORTAL                                     = 201797,
 
     GO_CAPTAIN_CHEST_1                            = 202212, //3145

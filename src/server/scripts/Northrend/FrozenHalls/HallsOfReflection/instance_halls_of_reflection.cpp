@@ -206,7 +206,7 @@ public:
                     if (state == DONE)
                     {
                         ++_waveCount;
-                        events.ScheduleEvent(EVENT_NEXT_WAVE, 60000);
+                        events.ScheduleEvent(EVENT_NEXT_WAVE, 40000);
                     }
                     break;
                 case DATA_MARWYN_EVENT:
