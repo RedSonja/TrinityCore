@@ -95,10 +95,10 @@ enum GameObjects
     GO_ORGRIM_HAMMER                              = 500003,
     GO_PORTAL                                     = 201797,
 
-    GO_CAPTAIN_CHEST_1                            = 202212, //3145
-    GO_CAPTAIN_CHEST_2                            = 201710, //30357
-    GO_CAPTAIN_CHEST_3                            = 202337, //3246
-    GO_CAPTAIN_CHEST_4                            = 202336, //3333
+    GO_CAPTAIN_CHEST_1                            = 201710, //Ally Normal
+    GO_CAPTAIN_CHEST_2                            = 202336, //Ally HC
+    GO_CAPTAIN_CHEST_3                            = 202337, //Horde Normal
+    GO_CAPTAIN_CHEST_4                            = 202212, //Horde HC
 };
 
 enum HorWorldStates

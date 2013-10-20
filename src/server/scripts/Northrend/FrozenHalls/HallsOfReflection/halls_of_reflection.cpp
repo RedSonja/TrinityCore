@@ -290,8 +290,10 @@ const Position SylvanasShadowThroneDoor = {5577.243f, 2235.852f, 733.0128f, 2.20
 const Position FalricStartPos           = {5283.878906f, 2030.459595f, 709.319641f, 5.506670f}; // Falric start position
 const Position MarwynStartPos           = {5334.979980f, 1982.399536f, 709.320129f, 2.347014f}; // Marwyn start position
 const Position LichKingFinalPos         = {5283.742188f, 1706.335693f, 783.293518f, 4.138510f}; // Lich King Final Pos
-const Position ChestPos                 = {5253.916504f,1584.498047f, 796.131042f, 2.802897f}; // Chest position
-const Position FinalPortalPos           = {5248.580078f, 1574.219971f, 795.208984f, 1.653074f}; // Final portal position
+const Position AllyChestPos             = {5262.305176f, 1587.146362f, 794.720398f, 2.718725f}; // Ally Chest Position
+const Position HordeChestPos            = {5253.916504f, 1584.498047f, 796.131042f, 2.802897f}; // Horde Chest position
+const Position AllyPortalPos			= {5256.595215f, 1574.617676f, 794.720703f, 2.710871f}; // Ally Portal Position
+const Position HordePortalPos           = {5248.580078f, 1574.219971f, 795.208984f, 1.653074f}; // Horde Portal position
 const Position HordeGunshipPos          = {5245.17f, 1582.11f, 761.72f, 5.86166f};              // Horde Gunship position
 const Position AllyGunshipPos           = {5247.09f, 1586.39f, 773.922f, 5.86166f};             // Ally Gunship position
 const Position HordeStairsPos           = {5246.169922f, 1628.619995f, 784.302002f, 5.886090f}; // Horde Stairs
@@ -1127,16 +1129,17 @@ class npc_jaina_or_sylvanas_escape_hor : public CreatureScript
                     case EVENT_ESCAPE_27:
                         if (_instance->GetData(DATA_TEAM_IN_INSTANCE) == ALLIANCE)
 						{
-                            me->SummonGameObject(GO_CAPTAIN_CHEST_1, ChestPos.GetPositionX(), ChestPos.GetPositionY(), ChestPos.GetPositionZ(), ChestPos.GetOrientation(), 0, 0, 0, 0, 720000);
+                            me->SummonGameObject(GO_PORTAL, AllyPortalPos.GetPositionX(), AllyPortalPos.GetPositionY(), AllyPortalPos.GetPositionZ(), AllyPortalPos.GetOrientation(), 0, 0, 0, 0, 720000);
+                            me->SummonGameObject(GO_CAPTAIN_CHEST_1, AllyChestPos.GetPositionX(), AllyChestPos.GetPositionY(), AllyChestPos.GetPositionZ(), AllyChestPos.GetOrientation(), 0, 0, 0, 0, 720000);
 							me->SummonGameObject(GO_SKYBREAKER, AllyGunshipPos.GetPositionX(), AllyGunshipPos.GetPositionY(), AllyGunshipPos.GetPositionZ(), AllyGunshipPos.GetOrientation(), 0, 0, 0, 0, 720000);
 							me->SummonGameObject(GO_STAIRS_SKYBREAKER, AllyStairsPos.GetPositionX(), AllyStairsPos.GetPositionY(), AllyStairsPos.GetPositionZ(), AllyStairsPos.GetOrientation(), 0, 0, 0, 0, 720000);
 						}
 						else
 						{
-                            me->SummonGameObject(GO_CAPTAIN_CHEST_3, ChestPos.GetPositionX(), ChestPos.GetPositionY(), ChestPos.GetPositionZ(), ChestPos.GetOrientation(), 0, 0, 0, 0, 720000);
-                        me->SummonGameObject(GO_PORTAL, FinalPortalPos.GetPositionX(), FinalPortalPos.GetPositionY(), FinalPortalPos.GetPositionZ(), FinalPortalPos.GetOrientation(), 0, 0, 0, 0, 720000);
-                        me->SummonGameObject(GO_ORGRIM_HAMMER, HordeGunshipPos.GetPositionX(), HordeGunshipPos.GetPositionY(), HordeGunshipPos.GetPositionZ(), HordeGunshipPos.GetOrientation(), 0, 0, 0, 0, 720000);
-                        me->SummonGameObject(GO_STAIRS_ORGRIM_HAMMER, HordeStairsPos.GetPositionX(), HordeStairsPos.GetPositionY(), HordeStairsPos.GetPositionZ(), HordeStairsPos.GetOrientation(), 0, 0, 0, 0, 720000);
+                            me->SummonGameObject(GO_CAPTAIN_CHEST_3, HordeChestPos.GetPositionX(), HordeChestPos.GetPositionY(), HordeChestPos.GetPositionZ(), HordeChestPos.GetOrientation(), 0, 0, 0, 0, 720000);
+                            me->SummonGameObject(GO_PORTAL, HordePortalPos.GetPositionX(), HordePortalPos.GetPositionY(), HordePortalPos.GetPositionZ(), HordePortalPos.GetOrientation(), 0, 0, 0, 0, 720000);
+                            me->SummonGameObject(GO_ORGRIM_HAMMER, HordeGunshipPos.GetPositionX(), HordeGunshipPos.GetPositionY(), HordeGunshipPos.GetPositionZ(), HordeGunshipPos.GetOrientation(), 0, 0, 0, 0, 720000);
+                            me->SummonGameObject(GO_STAIRS_ORGRIM_HAMMER, HordeStairsPos.GetPositionX(), HordeStairsPos.GetPositionY(), HordeStairsPos.GetPositionZ(), HordeStairsPos.GetOrientation(), 0, 0, 0, 0, 720000);
 						}
 						if (Creature* lichking = me->GetCreature(*me, _lichkingGUID))
                             lichking->DespawnOrUnsummon(1);
