@@ -1128,38 +1128,38 @@ class npc_jaina_or_sylvanas_escape_hor : public CreatureScript
                         break;
                     case EVENT_ESCAPE_27:
                         if (_instance->GetData(DATA_TEAM_IN_INSTANCE) == ALLIANCE)
-						{
+                        {
                             me->SummonGameObject(GO_PORTAL, AllyPortalPos.GetPositionX(), AllyPortalPos.GetPositionY(), AllyPortalPos.GetPositionZ(), AllyPortalPos.GetOrientation(), 0, 0, 0, 0, 720000);
                             me->SummonGameObject(GO_SKYBREAKER, AllyGunshipPos.GetPositionX(), AllyGunshipPos.GetPositionY(), AllyGunshipPos.GetPositionZ(), AllyGunshipPos.GetOrientation(), 0, 0, 0, 0, 720000);
                             me->SummonGameObject(GO_STAIRS_SKYBREAKER, AllyStairsPos.GetPositionX(), AllyStairsPos.GetPositionY(), AllyStairsPos.GetPositionZ(), AllyStairsPos.GetOrientation(), 0, 0, 0, 0, 720000);
 							
 						    if (GetDifficulty() == DUNGEON_DIFFICULTY_NORMAL)
-						    {
+                            {
                                me->SummonGameObject(GO_CAPTAIN_CHEST_1, AllyChestPos.GetPositionX(), AllyChestPos.GetPositionY(), AllyChestPos.GetPositionZ(), AllyChestPos.GetOrientation(), 0, 0, 0, 0, 720000);
-						    }
+                            }
                             else                             
-						    {
+                            {
 						       me->SummonGameObject(GO_CAPTAIN_CHEST_2, AllyChestPos.GetPositionX(), AllyChestPos.GetPositionY(), AllyChestPos.GetPositionZ(), AllyChestPos.GetOrientation(), 0, 0, 0, 0, 720000);
                             }
-						}
+                        }
 						else
-						{
+                        {
 						    if (_instance->GetData(DATA_TEAM_IN_INSTANCE) == HORDE)
-							{
+                            {
                                 me->SummonGameObject(GO_PORTAL, HordePortalPos.GetPositionX(), HordePortalPos.GetPositionY(), HordePortalPos.GetPositionZ(), HordePortalPos.GetOrientation(), 0, 0, 0, 0, 720000);
                                 me->SummonGameObject(GO_ORGRIM_HAMMER, HordeGunshipPos.GetPositionX(), HordeGunshipPos.GetPositionY(), HordeGunshipPos.GetPositionZ(), HordeGunshipPos.GetOrientation(), 0, 0, 0, 0, 720000);
                                 me->SummonGameObject(GO_STAIRS_ORGRIM_HAMMER, HordeStairsPos.GetPositionX(), HordeStairsPos.GetPositionY(), HordeStairsPos.GetPositionZ(), HordeStairsPos.GetOrientation(), 0, 0, 0, 0, 720000);
                             }
 						
 						    if (GetDifficulty() == DUNGEON_DIFFICULTY_NORMAL)
-							{
+                            {
 							    me->SummonGameObject(GO_CAPTAIN_CHEST_3, HordeChestPos.GetPositionX(), HordeChestPos.GetPositionY(), HordeChestPos.GetPositionZ(), HordeChestPos.GetOrientation(), 0, 0, 0, 0, 720000);
                             }
 							else
-							{
+                            {
 		                        me->SummonGameObject(GO_CAPTAIN_CHEST_4, HordeChestPos.GetPositionX(), HordeChestPos.GetPositionY(), HordeChestPos.GetPositionZ(), HordeChestPos.GetOrientation(), 0, 0, 0, 0, 720000);
                             }
-						}
+                        }
 						if (Creature* lichking = me->GetCreature(*me, _lichkingGUID))
                             lichking->DespawnOrUnsummon(1);
                         break;
