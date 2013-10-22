@@ -1373,8 +1373,8 @@ public:
             _events.ScheduleEvent(EVENT_FIREBALL, 3000); /// @todo adjust timers
             _events.ScheduleEvent(EVENT_FLAMESTRIKE, 6000);
             _events.ScheduleEvent(EVENT_FROSTBOLT, 9000);
-            _events.ScheduleEvent(EVENT_CHAINS_OF_ICE, 12000);
-            _events.ScheduleEvent(EVENT_HALLUCINATION, 40000);
+            _events.ScheduleEvent(EVENT_CHAINS_OF_ICE, 40000); // Was 120k
+            _events.ScheduleEvent(EVENT_HALLUCINATION, 120000); // Was 40k Changed to prevent 40sec despawn
         }
 
         void UpdateAI(uint32 diff) OVERRIDE
