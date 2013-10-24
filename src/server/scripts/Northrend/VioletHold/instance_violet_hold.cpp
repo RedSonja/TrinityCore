@@ -21,6 +21,10 @@
 #include "violet_hold.h"
 #include "Player.h"
 #include "TemporarySummon.h"
+#include "ScriptMgr.h"
+#include "SpellAuras.h"
+#include "SpellAuraEffects.h"
+#include "SpellScript.h"
 
 #define MAX_ENCOUNTER          3
 
@@ -61,7 +65,13 @@ enum AzureSaboteurSpells
 
 enum CrystalSpells
 {
-    SPELL_ARCANE_LIGHTNING                          = 57930
+    SPELL_ARCANE_LIGHTNING                          = 57930,
+    SPELL_ARCANE_SPHERE_PASSIVE                     = 44263
+};
+
+enum Events
+{
+    EVENT_ACTIVATE_CRYSTAL                          = 20001
 };
 
 const Position PortalLocation[] =
@@ -168,7 +178,7 @@ public:
 
         std::string str_data;
 
-        void Initialize() OVERRIDE
+        void Initialize()
         {
             uiMoragg = 0;
             uiErekem = 0;
@@ -218,7 +228,7 @@ public:
             memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
         }
 
-        bool IsEncounterInProgress() const OVERRIDE
+        bool IsEncounterInProgress() const
         {
             for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
                 if (m_auiEncounter[i] == IN_PROGRESS)
@@ -227,7 +237,7 @@ public:
             return false;
         }
 
-        void OnCreatureCreate(Creature* creature) OVERRIDE
+        void OnCreatureCreate(Creature* creature)
         {
             switch (creature->GetEntry())
             {
@@ -272,7 +282,7 @@ public:
             }
         }
 
-        void OnGameObjectCreate(GameObject* go) OVERRIDE
+        void OnGameObjectCreate(GameObject* go)
         {
             switch (go->GetEntry())
             {
@@ -393,13 +403,15 @@ public:
                     uiMainEventPhase = data;
                     if (data == IN_PROGRESS) // Start event
                     {
-                        if (GameObject* mainDoor = instance->GetGameObject(uiMainDoor))
-                            mainDoor->SetGoState(GO_STATE_READY);
+                        if (GameObject* pMainDoor = instance->GetGameObject(uiMainDoor))
+                            pMainDoor->SetGoState(GO_STATE_READY);
                         uiWaveCount = 1;
                         bActive = true;
                         for (int i = 0; i < 4; ++i)
-                            if (GameObject* crystal = instance->GetGameObject(uiActivationCrystal[i]))
-                                crystal->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                        {
+                            if (GameObject* pCrystal = instance->GetGameObject(uiActivationCrystal[i]))
+                                pCrystal->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                        }
                         uiRemoveNpc = 0; // might not have been reset after a wipe on a boss.
                     }
                     break;
@@ -615,7 +627,7 @@ public:
             }
         }
 
-        std::string GetSaveData() OVERRIDE
+        std::string GetSaveData()
         {
             OUT_SAVE_INST_DATA;
 
@@ -632,7 +644,7 @@ public:
             return str_data;
         }
 
-        void Load(const char* in) OVERRIDE
+        void Load(const char* in)
         {
             if (!in)
             {
@@ -681,7 +693,7 @@ public:
             return true;
         }
 
-        void Update(uint32 diff) OVERRIDE
+        void Update(uint32 diff)
         {
             if (!instance->HavePlayers())
                 return;
@@ -699,7 +711,7 @@ public:
             }
 
             // if main event is in progress and players have wiped then reset instance
-            if (uiMainEventPhase == IN_PROGRESS && CheckWipe())
+            if ( uiMainEventPhase == IN_PROGRESS && CheckWipe())
             {
                 SetData(DATA_REMOVE_NPC, 1);
                 StartBossEncounter(uiFirstBoss, false);
@@ -710,8 +722,10 @@ public:
                 uiMainEventPhase = NOT_STARTED;
 
                 for (int i = 0; i < 4; ++i)
-                    if (GameObject* crystal = instance->GetGameObject(uiActivationCrystal[i]))
-                        crystal->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                {
+                    if (GameObject* pCrystal = instance->GetGameObject(uiActivationCrystal[i]))
+                        pCrystal->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                }
 
                 if (Creature* pSinclari = instance->GetCreature(uiSinclari))
                 {
@@ -794,18 +808,17 @@ public:
 
         void ActivateCrystal()
         {
-            // just to make things easier we'll get the gameobject from the map
-            GameObject* invoker = instance->GetGameObject(uiActivationCrystal[0]);
-            if (!invoker)
-                return;
+            // just to make things easier we'll get the a gameobject from the map
+            GameObject* invoker=instance->GetGameObject(uiActivationCrystal[0]);
 
-            SpellInfo const* spellInfoLightning = sSpellMgr->GetSpellInfo(SPELL_ARCANE_LIGHTNING);
+            SpellInfo const* spellInfoLightning=sSpellMgr->GetSpellInfo(SPELL_ARCANE_LIGHTNING);
             if (!spellInfoLightning)
                 return;
 
             // the orb
-            TempSummon* trigger = invoker->SummonCreature(NPC_DEFENSE_SYSTEM, ArcaneSphere, TEMPSUMMON_MANUAL_DESPAWN, 0);
-            if (!trigger)
+            TempSummon* trigger=invoker->SummonCreature(DEFENSE_SYSTEM, ArcaneSphere, TEMPSUMMON_MANUAL_DESPAWN, 0);
+
+            if ( !trigger )
                 return;
 
             // visuals
@@ -833,7 +846,57 @@ public:
     };
 };
 
+class npc_violet_hold_arcane_sphere : public CreatureScript
+{
+public:
+    npc_violet_hold_arcane_sphere() : CreatureScript("npc_violet_hold_arcane_sphere") { }
+
+    CreatureAI* GetAI(Creature* c) const
+    {
+        return new npc_violet_hold_arcane_sphereAI(c);
+    }
+
+    struct npc_violet_hold_arcane_sphereAI : public ScriptedAI
+    {
+        npc_violet_hold_arcane_sphereAI(Creature* creature) : ScriptedAI(creature) { Reset(); }
+
+        uint32 DespawnTimer;
+
+        void Reset()
+        {
+            DespawnTimer = 3000;
+
+            me->SetDisableGravity(true);
+            DoCast(me, SPELL_ARCANE_SPHERE_PASSIVE, true);
+        }
+
+        void EnterCombat(Unit* /*who*/) {}
+
+        void UpdateAI(uint32 diff)
+        {
+            if (DespawnTimer <= diff)
+                me->Kill(me);
+            else
+                DespawnTimer -= diff;
+        }
+    };
+};
+
+class go_activation_crystal : public GameObjectScript
+{
+public:
+    go_activation_crystal() : GameObjectScript("go_activation_crystal") { }
+
+    bool OnGossipHello(Player* /*player*/, GameObject* go)
+    {
+        go->EventInform(EVENT_ACTIVATE_CRYSTAL);
+        return false;
+    }
+};
+
 void AddSC_instance_violet_hold()
 {
+    new go_activation_crystal();
+    new npc_violet_hold_arcane_sphere();
     new instance_violet_hold();
 }
