@@ -30,7 +30,7 @@ enum Spells
     SPELL_WATER_BOLT_VOLLEY                     = 54241,
     SPELL_WATER_BOLT_VOLLEY_H                   = 59521,
     SPELL_SPLASH                                = 59516,
-    SPELL_WATER_GLOBULE                         = 54268
+    SPELL_WATER_GLOBULE                         = 54268,
 };
 
 enum IchoronCreatures
@@ -46,7 +46,7 @@ enum Yells
     SAY_SPAWN                                   = 3,
     SAY_ENRAGE                                  = 4,
     SAY_SHATTER                                 = 5,
-    SAY_BUBBLE                                  = 6
+    SAY_BUBBLE                                  = 6,
 };
 
 enum Actions
@@ -68,13 +68,13 @@ static Position SpawnLoc[MAX_SPAWN_LOC]=
 
 enum Misc
 {
-    DATA_DEHYDRATION                            = 1
+    DATA_DEHYDRATION                            = 1,
 };
 
 class boss_ichoron : public CreatureScript
 {
 public:
-    boss_ichoron() : CreatureScript("boss_ichoron") { }
+    boss_ichoron() : CreatureScript("boss_ichoron") {}
 
     CreatureAI* GetAI(Creature* creature) const OVERRIDE
     {
@@ -338,7 +338,7 @@ public:
 class npc_ichor_globule : public CreatureScript
 {
 public:
-    npc_ichor_globule() : CreatureScript("npc_ichor_globule") { }
+    npc_ichor_globule() : CreatureScript("npc_ichor_globule") {}
 
     CreatureAI* GetAI(Creature* creature) const OVERRIDE
     {

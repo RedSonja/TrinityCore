@@ -55,7 +55,7 @@ enum Entry
     PULSING_PUMPKIN             = 23694,
     PUMPKIN_FIEND               = 23545,
     HELPER                      = 23686,
-    WISP_INVIS                  = 24034
+    WISP_INVIS                  = 24034,
 };
 
 enum Spells
@@ -92,7 +92,7 @@ enum Spells
     SPELL_WISP_FLIGHT_PORT      = 42818,
  // SPELL_WISP_INVIS            = 42823,
     SPELL_SMOKE                 = 42355,
-    SPELL_DEATH                 = 42566       //not correct spell
+    SPELL_DEATH                 = 42566,       //not correct spell
 };
 
 struct Locations
@@ -122,13 +122,13 @@ static Locations FlightPoint[]=
     {1761.40f, 1393.40f, 41.70f},
     {1759.10f, 1386.70f, 36.60f},
     {1757.80f, 1378.20f, 29.00f},
-    {1758.00f, 1367.00f, 19.51f}
+    {1758.00f, 1367.00f, 19.51f},
 };
 
 static Locations Spawn[]=
 {
     {1776.27f, 1348.74f, 19.20f},       //spawn point for pumpkin shrine mob
-    {1765.28f, 1347.46f, 17.55f}     //spawn point for smoke
+    {1765.28f, 1347.46f, 17.55f},       //spawn point for smoke
 };
 
 static char const* Text[]=
@@ -136,7 +136,7 @@ static char const* Text[]=
     "Horseman rise...",
     "Your time is nigh...",
     "You felt death once...",
-    "Now, know demise!"
+    "Now, know demise!",
 };
 
 #define EMOTE_LAUGHS    "Headless Horseman laughs"  // needs assigned to db.
@@ -233,7 +233,7 @@ public:
 
     struct npc_headAI : public ScriptedAI
     {
-        npc_headAI(Creature* creature) : ScriptedAI(creature) {}
+        npc_headAI(Creature* creature) : ScriptedAI(creature) { }
 
         uint64 bodyGUID;
 
@@ -316,7 +316,7 @@ public:
                 if (!bodyGUID)
                     bodyGUID = caster->GetGUID();
                 me->RemoveAllAuras();
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 DoCast(me, SPELL_HEAD_LANDS, true);
                 DoCast(me, SPELL_HEAD, false);
                 SaySound(SAY_LOST_HEAD);
@@ -580,7 +580,11 @@ public:
 
             Map::PlayerList const& players = me->GetMap()->GetPlayers();
             if (!players.isEmpty())
-                sLFGMgr->FinishDungeon(players.begin()->GetSource()->GetGroup()->GetGUID(), 285);
+            {
+                if (Group* group = players.begin()->GetSource()->GetGroup())
+                    if (group->isLFGGroup())
+                        sLFGMgr->FinishDungeon(group->GetGUID(), 285);
+            }
         }
 
         void SpellHit(Unit* caster, const SpellInfo* spell) OVERRIDE
@@ -792,7 +796,7 @@ public:
 
     struct npc_pulsing_pumpkinAI : public ScriptedAI
     {
-        npc_pulsing_pumpkinAI(Creature* creature) : ScriptedAI(creature) {}
+        npc_pulsing_pumpkinAI(Creature* creature) : ScriptedAI(creature) { }
 
         bool sprouted;
         uint64 debuffGUID;
